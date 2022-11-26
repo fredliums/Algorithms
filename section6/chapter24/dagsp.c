@@ -1,22 +1,27 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "base.h"
 
 void INITIALIZE_SINGLE_SOURCE(Graph *G, int s);
 void RELAX(Graph *G, int u, int v);
-int BELLMAN_FORD(Graph *G, int s);
+int DAG_SHORTEST_PATHS(Graph *G, int s);
 void PRINT_PATH(Graph *G, int s, int v);
+
+extern void dfs(Graph *G);
+
+Node **sorted = NULL;
 
 int main()
 {
     Graph G;
-    int s = 0;
+    int s = 1;
 
-    init_graph(&G, "./x1.txt");
-    BELLMAN_FORD(&G, s);
+    init_graph(&G, "./x2.txt");
+    DAG_SHORTEST_PATHS(&G, s);
 
     for(int i = 0; i < G.number; i++)
     {
-        printf("Path from %d to %d: ", s, i);
+        printf("Path from %d to %d: [length-%d]", s, i, G.V[i].d);
         PRINT_PATH(&G, s, i);
         printf("\n");
     }
@@ -27,13 +32,17 @@ int main()
 void
 PRINT_PATH(Graph *G, int s, int v)
 {
+    static char buff[128];
+    static char *p = buff;
+
     if (s == v)
     {
         printf("%d", s);
-        return;
     }
     else if (G->V[v].pi == NULL)
-        printf("No path from %d to %d\n", s, v);
+    {
+        printf("No path from %d to %d", s, v);
+    }
     else
     {
         PRINT_PATH(G, s, G->V[v].pi->id);
@@ -70,32 +79,24 @@ RELAX(Graph *G, int u, int v)
 }
 
 int
-BELLMAN_FORD(Graph *G, int s)
+DAG_SHORTEST_PATHS(Graph *G, int s)
 {
+    int id;
     ENode *p = NULL;
+
+    sorted = (Node**)calloc(G->number, sizeof(Node*));
+    
+    dfs(G);
 
     INITIALIZE_SINGLE_SOURCE(G, s);
 
-    for (int i = 1; i < G->number; i++)
+    for (int i = 0; i < G->number; i++)
     {
-        for (int j = 0; j < G->number; j++)
+        // topo order index
+        id = sorted[i]->id;
+        for(p = &(G->E[id]); p != NULL; p = p->next)
         {
-            for(p = &(G->E[j]); p != NULL; p = p->next)
-            {
-                RELAX(G, j, p->id);
-            }
+            RELAX(G, id, p->id);
         }
     }
-
-    // Check ring
-    for (int j = 0; j < G->number; j++)
-    {
-        for(p = &(G->E[j]); p != NULL; p = p->next)
-        {
-            if (G->V[p->id].d > G->V[j].d + p->w)
-                return 0;
-        }
-    }
-
-    return 1;
 }

@@ -3,27 +3,28 @@
 #include <string.h>
 #include "base.h"
 
-Graph* init_graph(Graph *G)
+Graph* init_graph(Graph *G, char *path)
 {
     char *line = NULL;
     size_t len = 0;
     FILE *stream;
     int i, number;
-    char start;
     ENode *p, *x;
     int u, v, w;
 
-    stream = fopen(PATH1, "r");
+    stream = fopen(path, "r");
 
     // Init nodes
     getline(&line, &len, stream);
-    sscanf(line, "%d %c", &number, &start);
+    sscanf(line, "%d", &number);
     G->number = number;
     G->V = (Node*)malloc(sizeof(Node) * number);
-    for (i = 0; i < number; i++)
+    getline(&line, &len, stream);
+    for (char *p = line, i = 0; i < number; i++, p += 2)
     {
         G->V[i].id = i;
-        G->V[i].name = start + i;
+        G->V[i].name = *p;
+        G->V[i].color = 0;
     }
 
     // Init edges
@@ -31,6 +32,7 @@ Graph* init_graph(Graph *G)
     for (i = 0; i < number; i++)
     {
         G->E[i].id = i;
+        G->E[i].w = 0;
         G->E[i].next = NULL;
     }
 
@@ -51,4 +53,18 @@ Graph* init_graph(Graph *G)
 
     return G;
 }
+
+int weight(ENode *es, int u, int v)
+{
+    ENode *p;
+
+    for (p = es[u].next; p != NULL; p = p->next)
+    {
+        if (p->id == v)
+            return p->w;
+    }
+
+    return NODE_MAX_D;
+}
+
 
