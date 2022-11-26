@@ -4,9 +4,9 @@
 #define NODE_MAX_D  999
 
 typedef struct _Node {
+    int d;
     int id;
     char name;
-    int d;
     int color;
     struct _Node *pi;
 } Node;
