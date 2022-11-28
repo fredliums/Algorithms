@@ -33,10 +33,12 @@ copy_matrix(Matrix *L, Matrix *N)
     L->rows = N->rows;
     L->cols = N->cols;
 
-    L->data = (int**)malloc(L->rows * sizeof(int*));
+    if (L->data == NULL)
+        L->data = (int**)malloc(L->rows * sizeof(int*));
     for(int i = 0; i < L->rows; i++)
     {
-        L->data[i] = (int*)malloc(L->cols * sizeof(int));
+        if (L->data == NULL)
+            L->data[i] = (int*)malloc(L->cols * sizeof(int));
         for (int j = 0; j < L->cols; j++)
         {
             L->data[i][j] = N->data[i][j]; 
@@ -55,7 +57,8 @@ set_matrix(Matrix *L, int value)
         return NULL;
 
     for (int i = 0; i < L->rows; i++)
-        memset(L->data[i], value, L->cols * sizeof(int));
+        for (int j = 0; j < L->cols; j++)
+            L->data[i][j] = value;
 }
 
 void
