@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include "matrix/matrix.h"
 
-Matrix* FLOYD_WARSHALL(Matrix *W);
+Matrix* FLOYD_WARSHALL(Matrix *W, Matrix *PI);
 static void init(Matrix *L);
+static void init_pi(Matrix *L, Matrix *W);
 
 int X[5][5] = {
     {0, 3, 8, 999, -4},
@@ -12,14 +13,23 @@ int X[5][5] = {
     {999, 999, 999, 6, 0}
 };
 
+
 int main()
 {
-    Matrix W;
+    Matrix W, PI;
     Matrix *L;
 
     init(&W);
-    L = FLOYD_WARSHALL(&W);
+    init_pi(&PI, &W);
+    L = FLOYD_WARSHALL(&W, &PI);
+    printf("Weight matrix:\n");
     print(L);
+    printf("Shortest paths matrix:\n");
+    print(&PI);
+    printf("Shortest paths:\n");
+    print_paths(L, &PI);
+
+    free_matrix(L);
 
     return 0;
 }
@@ -34,8 +44,29 @@ init(Matrix *L)
             L->data[i][j] = X[i][j];
 }
 
+
+/*
+ * PI[i][j] = i if W[i][j] < MAX and i != j
+ */
+static void
+init_pi(Matrix *PI, Matrix *W)
+{
+    init_matrix(PI, W->rows, W->cols);
+
+    for (int i = 0; i < W->rows; i++)
+    {
+        for (int j = 0; j < W->cols; j++)
+        {
+            if (i == j || W->data[i][j] == MATRIX_MAX_W)
+                PI->data[i][j] = -1;
+            else
+                PI->data[i][j] = i;
+        }
+    }
+}
+
 Matrix*
-FLOYD_WARSHALL(Matrix *W)
+FLOYD_WARSHALL(Matrix *W, Matrix *PI)
 {
     int min;
     Matrix *D, *DK, *P;
@@ -57,10 +88,11 @@ FLOYD_WARSHALL(Matrix *W)
         {
             for (int j = 0; j < W->cols; j++)
             {
-                min = D->data[i][k] + D->data[k][j];
+                min = add(D->data[i][k], D->data[k][j]);
                 if (min < D->data[i][j])
                 {
                     DK->data[i][j] = min;
+                    PI->data[i][j] = PI->data[k][j];
                 }
             }
         }
