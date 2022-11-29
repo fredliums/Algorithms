@@ -6,8 +6,6 @@ Matrix* SLOW_ALL_PAIRS_SHORTEST_PATHS(Matrix *W);
 Matrix* FASTER_ALL_PAIRS_SHORTEST_PATHS(Matrix *W);
 static int min(int a, int b);
 static void init(Matrix *L);
-static void print_path(int i, int j);
-static void print_paths(Matrix *N);
 
 int X[5][5] = {
     {0, 3, 8, 999, -4},
@@ -33,7 +31,7 @@ int main()
     printf("Shortest paths:\n");
     print(PI);
     printf("Paths:\n");
-    print_paths(L);
+    print_paths(L, PI);
 
     set_matrix(PI, -1);
     N = FASTER_ALL_PAIRS_SHORTEST_PATHS(&W);
@@ -60,37 +58,6 @@ init(Matrix *L)
     for (int i = 0; i < 5; i++)
         for (int j = 0; j < 5; j++)
             L->data[i][j] = X[i][j];
-}
-
-static void
-print_path(int i, int j)
-{
-    if (i == j)
-        printf("%d", i);
-    else if (PI->data[i][j] == -1)
-    {
-        printf("No path from %d to %d", i, j);
-    }
-    else
-    {
-        print_path(i, PI->data[i][j]);
-        printf("->%d", j);
-    }
-}
-
-
-static void
-print_paths(Matrix *N)
-{
-    for(int i = 0; i < PI->rows; i++)
-    {
-        for(int j = 0; j < PI->cols; j++)
-        {
-            printf("%d -> %d [%2d]: ", i, j, N->data[i][j]);
-            print_path(i, j);
-            printf("\n");
-        }
-    }
 }
 
 /*

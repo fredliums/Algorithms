@@ -73,6 +73,37 @@ print(const Matrix *L)
 }
 
 void
+print_path(Matrix *PI, int i, int j)
+{
+    if (i == j)
+        printf("%d", i);
+    else if (PI->data[i][j] == -1)
+    {
+        printf("No path from %d to %d", i, j);
+    }
+    else
+    {
+        print_path(PI, i, PI->data[i][j]);
+        printf("->%d", j);
+    }
+}
+
+
+void
+print_paths(Matrix *N, Matrix *PI)
+{
+    for(int i = 0; i < PI->rows; i++)
+    {
+        for(int j = 0; j < PI->cols; j++)
+        {
+            printf("%d -> %d [%2d]: ", i, j, N->data[i][j]);
+            print_path(PI, i, j);
+            printf("\n");
+        }
+    }
+}
+
+void
 free_matrix(Matrix *L)
 {
     if (L == NULL)
@@ -83,4 +114,13 @@ free_matrix(Matrix *L)
 
     free(L->data);
     free(L);
+}
+
+int
+add(int a, int b)
+{
+    if (a == MATRIX_MAX_W || b == MATRIX_MAX_W)
+        return MATRIX_MAX_W;
+
+    return a + b;
 }

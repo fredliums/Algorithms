@@ -15,6 +15,9 @@ Matrix* copy_matrix(Matrix *L, Matrix *N);
 Matrix* set_matrix(Matrix *L, int value);
 void print(const Matrix *L);
 void free_matrix(Matrix *L);
+void print_path(Matrix *PI, int i, int j);
+void print_paths(Matrix *N, Matrix *PI);
+int add(int a, int b);
 
 #endif
 
