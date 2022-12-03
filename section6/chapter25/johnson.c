@@ -15,6 +15,7 @@ int main()
 
     init_graph(&G, "./x.txt");
     D = JHONSON(&G);
+    printf("Shortest weights matrix:\n");
     print(D);
 
     return 0;
@@ -22,7 +23,7 @@ int main()
 
 Matrix* JHONSON(Graph *G)
 {
-    int i, j;
+    int i, j, gi, gj;
     Graph *GQ;
     ENode *p;
     Matrix* D;
@@ -38,7 +39,11 @@ Matrix* JHONSON(Graph *G)
     }
     else
     {
-        // Cumpute the new edges
+        // Set new d for G computed by Bellman
+        for (i = 0; i < G->number; i++)
+            G->V[i].d = GQ->V[i + 1].d;
+
+        // Compute the new edges
         for (i = 0; i < G->number; i++)
         {
             for (p = G->E[i].next; p != NULL; p = p->next)
@@ -48,9 +53,24 @@ Matrix* JHONSON(Graph *G)
         // Compute shortest path u->v
         for (i = 1; i < GQ->number; i++)
         {
+            gi = i - 1;
             DIJKSTRA(GQ, i);
-            for (j = 1; j< GQ->number; j++)
-                D->data[i - 1][j - 1] = GQ->V[j].d;
+            for (j = 1; j < GQ->number; j++)
+            {
+                gj = j - 1;
+                // D[u][v] = GQ[u][v] + h(v) - h(u)
+                D->data[gi][gj] = GQ->V[j].d
+                    + G->V[gj].d - G->V[gi].d;
+            }
+
+            // Print shortest weights and paths
+            for(j = 1; j < GQ->number; j++)
+            {
+                printf("Path from %d to %d: [length-%d]",
+                        i, j, D->data[i - 1][j - 1]);
+                PRINT_PATH(GQ, i, j);
+                printf("\n");
+            }
         }
     }
 
@@ -64,6 +84,7 @@ static int set_weight(Graph *G, Graph *GQ, int u, int v)
     while (p->id != v + 1)
         p = p->next;
 
+    // new weight: GQ[u][v] = G[u][v] + h(u) - h(v)
     p->w = weight(G, u, v) + GQ->V[u + 1].d - GQ->V[v + 1].d;
 
     return p->w;
