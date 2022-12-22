@@ -19,7 +19,7 @@ int main()
 
     lens1 = len(s1);
     lens2 = len(s2);
-    index = rabin_karp_matcher(s1, lens1, s2, lens2, 10, 13);
+    index = rabin_karp_matcher(s1, lens1, s2, lens2, 128, 13);
     printf("Matched index: %d\n", index);
 
     return 0;
@@ -40,9 +40,8 @@ int rabin_karp_matcher(char *T, int Tn, char *P, int Pn, int d, int q)
         return -2;
 
     // Calculate h
-    for (i = 0; i < Pn - 1; i++)
-        h *= d;
-    h = h % q;
+    for (i = 1; i < Pn; i++)
+        h = (h * d) % q;
 
     // Calculate p and t0
     for (i = 0; i < Pn; i++)
@@ -87,7 +86,7 @@ int rabin_karp_matcher(char *T, int Tn, char *P, int Pn, int d, int q)
 
 static int str(char c)
 {
-    return c - '0';
+    return (int)c;
 }
 
 static int len(char *s)
