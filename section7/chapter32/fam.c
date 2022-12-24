@@ -83,14 +83,31 @@ int COMPUTE_TRANSITION_FUNCTION(char *P, int m)
 
     for (i = 0; i < m; i++)
     {
-        for (j = ' '; j < CHAR_NUMS; j++)
+        if (m < CHAR_NUMS)
         {
-            k = m < i + 1 ? m : i + 1;
-            while (!check_suffix(P, k, i, j))
+            // Calculate T(i, P[a]), 0 < a < m
+            for (j = 0; j < m; j++)
             {
-                k--;
+                k = i + 1;
+                while (!check_suffix(P, k, i, P[j]))
+                {
+                    k--;
+                }
+                delta[i][P[j]] = k;
             }
-            delta[i][j] = k;
+        }
+        else
+        {
+            // Calculate T(i, a), 0 < a < CHAR_NUMS
+            for (j = ' '; j < CHAR_NUMS; j++)
+            {
+                k = i + 1;
+                while (!check_suffix(P, k, i, j))
+                {
+                    k--;
+                }
+                delta[i][j] = k;
+            }
         }
     }
 
