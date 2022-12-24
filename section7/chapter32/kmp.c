@@ -56,6 +56,8 @@ int KMP_MATCHER(char *T, int n, char *P, int m)
         {
             printf("Matched and index start with %d\n", i - m + 1);
             last = i - m + 1;
+            // Matched and re-match, q must 0 here
+            q = PI[q];
         }
 
     }
