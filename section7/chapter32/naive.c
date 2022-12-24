@@ -16,14 +16,14 @@ int main()
     scanf("%s", s2);
 
     index = naive_matcher(s1, s2);
-    printf("Matched index: %d\n", index);
+    printf("Last matched index: %d\n", index);
 
     return 0;
 }
 
 int naive_matcher(char *T, char *P)
 {
-    int i = 0;
+    int i = 0, last = -1;
     char *p, *q;
 
     if (!T || !P)
@@ -38,12 +38,15 @@ int naive_matcher(char *T, char *P)
         }
 
         if (*q == '\0')
-            return i;
+        {
+            printf("Matched and index start with %d\n", i);
+            last = i;
+        }
 
         i++;
     }
 
-    return -1;
+    return last;
 }
 
 int matcher(char *T, int Tn, char *P, int Tp)

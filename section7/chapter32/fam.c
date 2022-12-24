@@ -28,7 +28,7 @@ int main()
 
     COMPUTE_TRANSITION_FUNCTION(s2, ls2);
     index = FINITE_AUTOMATION_MATCHER(s1, ls1, ls2);
-    printf("Matched index: %d\n", index);
+    printf("Last matched index: %d\n", index);
 
     return 0;
 }
@@ -56,16 +56,19 @@ static int check_suffix(char *P, int k, int q, char a)
 
 int FINITE_AUTOMATION_MATCHER(char *T, int n, int m)
 {
-    int i, q = 0;
+    int i, q = 0, last = -1;
 
     for (i = 0; i < n; i++)
     {
         q = delta[q][T[i]];
         if (q == m)
-            return i - m + 1;
+        {
+            printf("Matched and index start with %d\n", i - m + 1);
+            last = i - m + 1;
+        }
     }
 
-    return -1;
+    return last;
 }
 
 /*
