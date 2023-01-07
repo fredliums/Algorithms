@@ -9,5 +9,6 @@ int insert_sort(int *A, int n);
 int select_sort(int *A, int n);
 int merge_sort(int *A, int n);
 int heap_sort(int *A, int n);
+int quick_sort(int *A, int n);
 
 #endif
