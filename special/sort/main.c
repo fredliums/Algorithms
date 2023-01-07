@@ -4,7 +4,7 @@ int main()
 {
     int A[10] = {2, 5, 6, 2, 1, 7, 9, 0, 6, 7};
 
-    quick_sort(A, 10);
+    shell_sort_b(A, 10);
     print(A, 10);
 
     /*

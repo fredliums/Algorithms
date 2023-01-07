@@ -1,24 +1,10 @@
-* bubble_sort
-
-* insert_sort
-
-
-* merge_sort
-
-
-* heap_sort
-
-
-* select_sort
-
-
-* quick_sort
-
-
-* counting_sort
-
-
-* radix_sort
-
-
-* bucket_sort
+1. bubble_sort
+2. insert_sort
+3. merge_sort
+4. heap_sort
+5. select_sort
+6. quick_sort
+7. shell_sort
+8. counting_sort
+9. radix_sort
+10. bucket_sort
